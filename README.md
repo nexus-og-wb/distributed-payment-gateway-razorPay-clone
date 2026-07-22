@@ -4,7 +4,7 @@
 A distributed payment gateway built with Java and Spring Boot that simulates core payment processing workflows inspired by Razorpay.
 
 ## Tech Stack
-- Java 21
+- Java 25
 - Spring Boot
 - Spring Data JPA
 - PostgreSQL
