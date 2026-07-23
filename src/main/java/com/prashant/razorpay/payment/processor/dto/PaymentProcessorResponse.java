@@ -5,7 +5,7 @@ public sealed interface PaymentProcessorResponse permits
         PaymentProcessorResponse.Success,
         PaymentProcessorResponse.Failure {
 
-    record Pending(String processorRef) implements PaymentProcessorResponse{}
+    record Pending(String processorReference) implements PaymentProcessorResponse{}
 
     record Success(String processorRef, String bankReference) implements PaymentProcessorResponse{}
 
