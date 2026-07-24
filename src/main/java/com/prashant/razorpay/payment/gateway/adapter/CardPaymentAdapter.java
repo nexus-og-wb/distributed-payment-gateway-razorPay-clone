@@ -4,6 +4,8 @@ import com.prashant.razorpay.payment.gateway.PaymentAdapter;
 import com.prashant.razorpay.payment.gateway.dto.PaymentRequest;
 import com.prashant.razorpay.payment.gateway.dto.PaymentResult;
 
+import java.util.UUID;
+
 public class CardPaymentAdapter implements PaymentAdapter {
 
     @Override
@@ -11,5 +13,10 @@ public class CardPaymentAdapter implements PaymentAdapter {
 
         return null;
 
+    }
+
+    @Override
+    public PaymentResult capture(UUID paymentId) {
+        return null;
     }
 }
