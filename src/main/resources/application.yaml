@@ -2,7 +2,7 @@ spring:
   application:
     name: razorpay
   datasource:
-    url: ${DB_URL}
+    url: jdbc:postgresql://localhost:5432/postgres
     username: ${DB_USER}
     password: ${DB_PASS}
   jpa:
@@ -12,3 +12,5 @@ spring:
     properties:
       hibernate:
         dialect: org.hibernate.dialect.PostgreSQLDialect
+vault:
+  master-key: alakwfchwekl4kfsnf4wnlsdnmvl349jvlsdkmvsldjn342ikvnsldnmvsdlj23409k

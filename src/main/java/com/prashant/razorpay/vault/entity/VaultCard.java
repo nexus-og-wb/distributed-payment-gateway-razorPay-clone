@@ -1,13 +1,20 @@
 package com.prashant.razorpay.vault.entity;
 
 import com.prashant.razorpay.common.entity.BaseEntity;
+import com.prashant.razorpay.common.enums.CardBrand;
 import jakarta.persistence.*;
+import lombok.*;
 
 import java.time.LocalDateTime;
 import java.util.UUID;
 
 @Entity
 @Table(name = "vault_card")
+@Getter
+@Setter
+@AllArgsConstructor
+@NoArgsConstructor
+@Builder
 public class VaultCard extends BaseEntity {
 
     @Id
@@ -24,7 +31,7 @@ public class VaultCard extends BaseEntity {
     private String lastFour;
 
     @Column(nullable = false)
-    private String brand;
+    private CardBrand brand;
 
     @Column(nullable = false, length = 6)
     private String bin;

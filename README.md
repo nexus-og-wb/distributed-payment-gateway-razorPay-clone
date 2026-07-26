@@ -333,7 +333,7 @@ cd distributed-payment-gateway
 createdb payment_gateway_db
 
 # 3. Configure environment variables (see below),
-#    or edit src/main/resources/application.yml directly
+#    or edit src/main/resources/application.yaml directly
 
 # 4. Build the project
 mvn clean install
