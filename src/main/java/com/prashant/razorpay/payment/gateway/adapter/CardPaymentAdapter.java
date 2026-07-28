@@ -32,6 +32,6 @@ public class CardPaymentAdapter implements PaymentAdapter {
 
     @Override
     public PaymentResult capture(UUID paymentId) {
-        return null;
+        return new PaymentResult.Success("CARD_REF");
     }
 }
