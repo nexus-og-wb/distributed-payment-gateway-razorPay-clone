@@ -2,12 +2,12 @@ spring:
   application:
     name: razorpay
   datasource:
-    url: jdbc:postgresql://localhost:5432/postgres
+    url: jdbc:postgresql://localhost:5432/razorpay_clone
     username: ${DB_USER}
     password: ${DB_PASS}
   jpa:
     hibernate:
-      ddl-auto: create-drop
+      ddl-auto: update
     show-sql: true
     properties:
       hibernate:
@@ -33,3 +33,6 @@ payment:
         min-delay-seconds: 4
         max-delay-seconds: 10
         success-rate: 80
+
+jwt:
+  secret-key: dont-use-in-prod-deibrvjvbeiuoiuyr3498599fsudheih2398ryrh34r34irh3irh3rhk3fh34r4wfi34

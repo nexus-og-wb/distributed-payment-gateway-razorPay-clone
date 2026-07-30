@@ -11,7 +11,7 @@ public record OrderResponse(
 
         UUID id,
 
-        UUID merchant,
+        UUID merchantId,
 
         String receipt,
 
