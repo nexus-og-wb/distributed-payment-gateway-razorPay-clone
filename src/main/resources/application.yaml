@@ -14,7 +14,7 @@ spring:
         dialect: org.hibernate.dialect.PostgreSQLDialect
 
 vault:
-  master-key: alakwfchwekl4kfsnf4wnlsdnmvl349jvlsdkmvsldjn342ikvnsldnmvsdlj23409k
+  master-key: 9Xr4vQ2mLp8Nw1Kd7Ht5Ys3Fc6Zj0BaE
 
 payment:
   simulator:
