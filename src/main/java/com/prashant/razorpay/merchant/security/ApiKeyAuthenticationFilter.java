@@ -82,9 +82,8 @@ public class ApiKeyAuthenticationFilter extends OncePerRequestFilter {
         if(BCRYPT.matches(rawSecret, apiKey.getKeySecretHash())){
             return true;
         }
-        boolean isInGracePeriod = apiKey.getGracePeriodExpiresAt() != null
-                && LocalDateTime.now().isBefore(apiKey.getGracePeriodExpiresAt());
-        return isInGracePeriod
+
+        return apiKey.isInGracePeriod()
                 && apiKey.getPreviousKeySecretHash() != null
                 && BCRYPT.matches(rawSecret, apiKey.getPreviousKeySecretHash());
     }
