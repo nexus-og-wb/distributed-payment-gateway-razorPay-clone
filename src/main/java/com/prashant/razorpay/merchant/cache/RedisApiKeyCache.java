@@ -1,11 +1,9 @@
 package com.prashant.razorpay.merchant.cache;
-
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.prashant.razorpay.merchant.entity.ApiKey;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Component;
+import tools.jackson.databind.ObjectMapper;
 
 import java.time.Duration;
 import java.util.Optional;
@@ -30,7 +28,7 @@ public class RedisApiKeyCache implements ApiKeyCache {
             return Optional.of(objectMapper.readValue(json, ApiKeyCacheEntry.class));
 
         }catch(Exception e){
-            log.warn("ApiKey cache read failed for keyId: {}", keyId);
+            log.warn("ApiKey cache read failed, keyId: {}", keyId);
             return Optional.empty();
         }
     }
@@ -38,10 +36,17 @@ public class RedisApiKeyCache implements ApiKeyCache {
     @Override
     public void put(String keyId, ApiKeyCacheEntry entry) {
 
+        try {
+            stringRedisTemplate.opsForValue().set(PREFIX+keyId,
+                    objectMapper.writeValueAsString(entry),
+                    TTL);
+        }catch (Exception e){
+            log.warn("ApiKey cache put failed, keyId: {}", keyId);
+        }
     }
 
     @Override
     public void evict(String keyId) {
-
+        stringRedisTemplate.delete(PREFIX+keyId);
     }
 }

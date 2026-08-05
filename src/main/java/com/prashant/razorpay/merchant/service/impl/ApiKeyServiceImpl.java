@@ -2,6 +2,7 @@ package com.prashant.razorpay.merchant.service.impl;
 
 import com.prashant.razorpay.common.exceptions.ResourceNotFoundException;
 import com.prashant.razorpay.common.util.RandomizerUtil;
+import com.prashant.razorpay.merchant.cache.ApiKeyCache;
 import com.prashant.razorpay.merchant.dto.request.CreateApiKeyRequest;
 import com.prashant.razorpay.merchant.dto.response.ApiKeyCreateResponse;
 import com.prashant.razorpay.merchant.dto.response.ApiKeyResponse;
@@ -16,7 +17,6 @@ import jakarta.annotation.Nullable;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -34,6 +34,7 @@ public class ApiKeyServiceImpl implements ApiKeyService {
     private final ApiKeyRepository apiKeyRepository;
     private final ApiKeyMapper apiKeyMapper;
     private final BCryptPasswordEncoder BCRYPT = new BCryptPasswordEncoder();
+    private final ApiKeyCache apiKeyCache;
     @Override
     @Transactional
     public ApiKeyCreateResponse create(UUID merchantId, CreateApiKeyRequest request) {
@@ -68,6 +69,7 @@ public class ApiKeyServiceImpl implements ApiKeyService {
                 .orElseThrow(() -> new ResourceNotFoundException("apiKey", keyId));
 
         key.setEnabled(false);
+        apiKeyCache.evict(key.getKeyId());
     }
 
     @Override
@@ -86,6 +88,9 @@ public class ApiKeyServiceImpl implements ApiKeyService {
         apiKey.setRotatedAt(LocalDateTime.now());
         apiKey.setGracePeriodExpiresAt(LocalDateTime.now().plusHours(24));
         apiKey = apiKeyRepository.save(apiKey);
+
+        apiKeyCache.evict(apiKey.getKeyId());
+
         return new ApiKeyCreateResponse(apiKey.getId(), apiKey.getKeyId(), newRawSecret, apiKey.getEnvironment());
     }
 }
