@@ -23,7 +23,7 @@ public class SlidingWindowRateLimiter implements RateLimiter {
 
         var zset = redis.opsForZSet();
         zset.removeRangeByScore(redisKey, Double.NEGATIVE_INFINITY, floorMs);
-        Long count = zset.size(redisKey);
+        Long count = zset.zCard(redisKey);
 
         long current = count != null ? count : 0;
 
