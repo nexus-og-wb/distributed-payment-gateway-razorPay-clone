@@ -2,11 +2,17 @@ package com.prashant.razorpay.merchant.entity;
 
 import com.prashant.razorpay.common.entity.BaseEntity;
 import jakarta.persistence.*;
+import lombok.*;
 
 import java.time.LocalDateTime;
 import java.util.UUID;
 
 @Entity
+@Getter
+@Setter
+@AllArgsConstructor
+@NoArgsConstructor
+@Builder
 @Table(name = "merchant_webhook_config",
 indexes = {@Index(name = "idx_webhook_merchant_id", columnList = "merchant_id, enabled")
 })
