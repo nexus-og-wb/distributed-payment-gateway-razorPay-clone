@@ -74,7 +74,7 @@ public class ApiKeyServiceImpl implements ApiKeyService {
 
     @Override
     @Transactional
-    public @Nullable ApiKeyCreateResponse rotateKey(UUID merchantId, UUID keyId) {
+    public ApiKeyCreateResponse rotateKey(UUID merchantId, UUID keyId) {
         ApiKey apiKey = apiKeyRepository.findById(keyId)
                 .filter(k -> k.getMerchant().getId().equals(merchantId))
                 .orElseThrow(() -> new ResourceNotFoundException("apiKey", keyId));

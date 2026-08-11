@@ -13,6 +13,8 @@ public record OrderResponse(
 
         UUID merchantId,
 
+        UUID  customerId,
+
         String receipt,
 
         Money amount,
