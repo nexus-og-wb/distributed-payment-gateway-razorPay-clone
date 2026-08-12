@@ -1,5 +1,6 @@
 package com.prashant.razorpay.payment.service.impl;
 
+import com.prashant.razorpay.common.enums.EventAggregateType;
 import com.prashant.razorpay.common.enums.OrderStatus;
 import com.prashant.razorpay.common.enums.PaymentEvent;
 import com.prashant.razorpay.common.enums.PaymentStatus;
@@ -13,6 +14,7 @@ import com.prashant.razorpay.payment.gateway.PaymentGatewayRouter;
 import com.prashant.razorpay.payment.gateway.dto.PaymentRequest;
 import com.prashant.razorpay.payment.gateway.dto.PaymentResult;
 import com.prashant.razorpay.payment.mapper.PaymentMapper;
+import com.prashant.razorpay.payment.outbox.OutboxEventPublisher;
 import com.prashant.razorpay.payment.repository.OrderRepository;
 import com.prashant.razorpay.payment.repository.PaymentRepository;
 import com.prashant.razorpay.payment.service.PaymentService;
@@ -24,6 +26,7 @@ import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
+import java.util.Map;
 import java.util.UUID;
 
 @Service
@@ -36,6 +39,7 @@ public class PaymentServiceImpl implements PaymentService {
     private final PaymentGatewayRouter paymentGatewayRouter;
     private final PaymentMapper paymentMapper;
     private final PaymentTransitionService paymentTransitionService;
+    private final OutboxEventPublisher eventPublisher;
     @Override
     @Transactional
     public PaymentResponse initiate(UUID merchantId, PaymentInitRequest request) {
@@ -95,7 +99,18 @@ public class PaymentServiceImpl implements PaymentService {
         payment = paymentRepository.save(payment);
         orderRepository.save(order);
 
-        //TODO: send an outbox (Kafka event)
+        eventPublisher.publish(
+                EventAggregateType.PAYMENT,
+                order.getId(),
+                "PAYMENT_CREATED",
+                Map.of("orderId", order.getId().toString(),
+                        "paymentId", payment.getId().toString(),
+                        "merchantId", merchantId.toString(),
+                        "paymentStatus", payment.getStatus().name(),
+                        "amountUnits", order.getAmount().getAmountUnits(),
+                        "amountCurrency", order.getAmount().getCurrency(),
+                        "paymentMethod", payment.getMethod())
+        );
 
         return paymentMapper.toResponse(payment);
     }
@@ -126,7 +141,17 @@ public class PaymentServiceImpl implements PaymentService {
 
         payment = paymentRepository.save(payment);
 
-        //TODO: send an outbox (Kafka event)
+        eventPublisher.publish(
+                EventAggregateType.PAYMENT,
+                payment.getId(),
+                "PAYMENT_STATUS_CHANGED",
+                Map.of("orderId", payment.getOrder().getId().toString(),
+                        "paymentId", payment.getId().toString(),
+                        "merchantId", payment.getMerchantId().toString(),
+                        "paymentStatus", payment.getStatus().name(),
+                        "amountUnits", payment.getAmount().getAmountUnits(),
+                        "amountCurrency", payment.getAmount().getCurrency())
+        );
 
         return paymentMapper.toResponse(payment);
     }
@@ -176,7 +201,18 @@ public class PaymentServiceImpl implements PaymentService {
         paymentRepository.save(payment);
         orderRepository.save(orderRecord);
 
-        //TODO: send an outbox (Kafka event)
+        eventPublisher.publish(
+                EventAggregateType.PAYMENT,
+                payment.getId(),
+                "PAYMENT_STATUS_CHANGED",
+                Map.of("orderId", payment.getOrder().getId().toString(),
+                        "paymentId", payment.getId().toString(),
+                        "merchantId", payment.getMerchantId().toString(),
+                        "paymentStatus", payment.getStatus().name(),
+                        "amountUnits", payment.getAmount().getAmountUnits(),
+                        "amountCurrency", payment.getAmount().getCurrency())
+        );
+
 
     }
 }
