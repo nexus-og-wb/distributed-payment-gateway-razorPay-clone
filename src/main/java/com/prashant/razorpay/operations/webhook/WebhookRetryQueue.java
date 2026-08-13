@@ -31,7 +31,7 @@ public class WebhookRetryQueue {
         Set<ZSetOperations.TypedTuple<String>> due = redisTemplate.opsForZSet().rangeByScoreWithScores(key, 0, now, 0, limit);
         if(due == null || due.isEmpty()) return Set.of();
 
-        due.forEach(tuple -> redisTemplate.opsForZSet().remove(key, tuple.getScore()));
+        due.forEach(tuple -> redisTemplate.opsForZSet().remove(key, tuple.getValue()));
         return due.stream()
                 .map(tuple -> UUID.fromString(tuple.getValue()))
                 .collect(Collectors.toSet());
