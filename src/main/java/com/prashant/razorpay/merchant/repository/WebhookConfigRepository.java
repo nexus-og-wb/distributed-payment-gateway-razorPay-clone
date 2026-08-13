@@ -14,4 +14,5 @@ public interface WebhookConfigRepository extends JpaRepository<MerchantWebhookCo
 
     Optional<MerchantWebhookConfig> findByIdAndMerchant_Id(UUID configId, UUID merchantId);
 
+    List<MerchantWebhookConfig> findByMerchant_IdAndEnabledTrue(UUID merchantId);
 }
