@@ -69,4 +69,6 @@ public class Settlement extends BaseEntity {
 
     private LocalDateTime processedAt;
 
+    private String failureReason;
+
 }
