@@ -1,0 +1,42 @@
+package com.prashant.razorpay.operations_service.entity;
+
+import com.prashant.razorpay.common_lib.entity.BaseEntity;
+import jakarta.persistence.*;
+import lombok.*;
+import org.hibernate.annotations.JdbcTypeCode;
+import org.hibernate.type.SqlTypes;
+
+import java.time.LocalDateTime;
+import java.util.Map;
+import java.util.UUID;
+
+@Entity
+@Getter
+@Setter
+@AllArgsConstructor
+@NoArgsConstructor
+@Builder
+@Table(name = "dlq_event")
+public class DlqEvent extends BaseEntity {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.UUID)
+    private UUID id;
+
+    @OneToOne(fetch = FetchType.LAZY)
+    private WebhookEvent webhookEvent;
+
+    @Column(nullable = false)
+    private UUID merchantId;
+
+    @Column(length = 1000)
+    private String finalError;
+
+    @JdbcTypeCode(SqlTypes.JSON)
+    @Column(columnDefinition = "jsonb")
+    private Map<String, Object> payload;
+
+    private LocalDateTime movedAt;
+
+    private LocalDateTime replayedAt;
+}
