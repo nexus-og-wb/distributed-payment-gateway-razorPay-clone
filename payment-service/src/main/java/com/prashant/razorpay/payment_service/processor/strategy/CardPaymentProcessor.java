@@ -1,10 +1,10 @@
 package com.prashant.razorpay.payment_service.processor.strategy;
 
 
+import com.prashant.razorpay.common_lib.dto.PaymentProcessorRequest;
+import com.prashant.razorpay.common_lib.dto.PaymentProcessorResponse;
 import com.prashant.razorpay.common_lib.util.RandomizerUtil;
 import com.prashant.razorpay.payment_service.processor.PaymentProcessor;
-import com.prashant.razorpay.payment_service.processor.dto.PaymentProcessorRequest;
-import com.prashant.razorpay.payment_service.processor.dto.PaymentProcessorResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 

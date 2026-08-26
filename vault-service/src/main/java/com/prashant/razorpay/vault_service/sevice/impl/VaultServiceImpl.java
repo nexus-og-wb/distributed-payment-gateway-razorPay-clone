@@ -1,6 +1,8 @@
 package com.prashant.razorpay.vault_service.sevice.impl;
 
 
+import com.prashant.razorpay.common_lib.dto.PaymentProcessorRequest;
+import com.prashant.razorpay.common_lib.dto.PaymentProcessorResponse;
 import com.prashant.razorpay.common_lib.entity.Money;
 import com.prashant.razorpay.common_lib.enums.CardBrand;
 import com.prashant.razorpay.common_lib.exceptions.ResourceNotFoundException;
@@ -10,6 +12,7 @@ import com.prashant.razorpay.vault_service.dto.request.TokenizeRequest;
 import com.prashant.razorpay.vault_service.dto.response.TokenizeResponse;
 import com.prashant.razorpay.vault_service.entity.CardToken;
 import com.prashant.razorpay.vault_service.entity.VaultCard;
+import com.prashant.razorpay.vault_service.processor.CardPaymentProcessor;
 import com.prashant.razorpay.vault_service.repository.CardTokenRepository;
 import com.prashant.razorpay.vault_service.repository.VaultCardRepository;
 import com.prashant.razorpay.vault_service.sevice.VaultService;
@@ -33,7 +36,7 @@ public class VaultServiceImpl implements VaultService {
     private final CardTokenRepository cardTokenRepository;
     private final VaultCardRepository vaultCardRepository;
     private final BytesEncryptor dekEncrypter;
-    private final PaymentProcessorRouter paymentProcessorRouter;
+    private final CardPaymentProcessor cardPaymentProcessor;
 
 
 
@@ -95,7 +98,7 @@ public class VaultServiceImpl implements VaultService {
             PaymentProcessorRequest paymentProcessorRequest = PaymentProcessorRequest
                     .card(paymentId, pan, expiry, amount, methodDetails);
 
-            PaymentProcessorResponse response = paymentProcessorRouter.charge(paymentProcessorRequest);
+            PaymentProcessorResponse response = cardPaymentProcessor.charge(paymentProcessorRequest);
 
             log.info("Vault charge registered, token{}****", token.substring(0, 4));
 

@@ -1,11 +1,13 @@
 package com.prashant.razorpay.payment_service.api;
 
 
-import com.prashant.razorpay.payment_service.entity.Payment;
+import com.prashant.razorpay.common_lib.dto.PaymentSettlementView;
 
 import java.util.List;
 import java.util.UUID;
 
 public interface PaymentLookupService {
-    List<Payment> findUnsettledCapturedPayments(UUID merchantId);
+    List<PaymentSettlementView> findUnsettledCapturedPayments(UUID merchantId);
+
+    void markSettled(List<UUID> paymentIds);
 }

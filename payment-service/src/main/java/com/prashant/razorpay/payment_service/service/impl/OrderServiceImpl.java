@@ -1,11 +1,13 @@
 package com.prashant.razorpay.payment_service.service.impl;
 
 
+import com.prashant.razorpay.common_lib.dto.FindOrCreateCustomerRequest;
 import com.prashant.razorpay.common_lib.enums.EventAggregateType;
 import com.prashant.razorpay.common_lib.enums.OrderStatus;
 import com.prashant.razorpay.common_lib.exceptions.BusinessRuleViolationException;
 import com.prashant.razorpay.common_lib.exceptions.DuplicateResourceException;
 import com.prashant.razorpay.common_lib.exceptions.ResourceNotFoundException;
+import com.prashant.razorpay.payment_service.client.CustomerServiceClient;
 import com.prashant.razorpay.payment_service.dto.request.CreateOrderRequest;
 import com.prashant.razorpay.payment_service.dto.response.OrderResponse;
 import com.prashant.razorpay.payment_service.dto.response.PaymentResponse;
@@ -42,7 +44,7 @@ public class OrderServiceImpl implements OrderService {
 
     private final OrderMapper orderMapper;
 
-    private final CustomerService customerService;
+    private final CustomerServiceClient  customerServiceClient;
 
     private final OutboxEventPublisher eventPublisher;
 
@@ -58,10 +60,11 @@ public class OrderServiceImpl implements OrderService {
         UUID customerId = null;
 
         if(request.customer() != null) {
-            customerId = customerService.findOrCreate(merchantId,
-                    request.customer().email(),
-                    request.customer().name(),
-                    request.customer().phone()
+            customerId = customerServiceClient.findOrCreate(
+                    new FindOrCreateCustomerRequest(merchantId,
+                            request.customer().email(),
+                            request.customer().name(),
+                            request.customer().phone())
             );
         }
 

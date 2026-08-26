@@ -1,13 +1,13 @@
 package com.prashant.razorpay.payment_service.gateway.adapter;
 
 
+import com.prashant.razorpay.common_lib.dto.PaymentProcessorRequest;
+import com.prashant.razorpay.common_lib.dto.PaymentProcessorResponse;
 import com.prashant.razorpay.common_lib.enums.PaymentMethod;
 import com.prashant.razorpay.payment_service.gateway.PaymentAdapter;
 import com.prashant.razorpay.payment_service.gateway.dto.PaymentRequest;
 import com.prashant.razorpay.payment_service.gateway.dto.PaymentResult;
 import com.prashant.razorpay.payment_service.processor.PaymentProcessorRouter;
-import com.prashant.razorpay.payment_service.processor.dto.PaymentProcessorRequest;
-import com.prashant.razorpay.payment_service.processor.dto.PaymentProcessorResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;

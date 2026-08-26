@@ -1,4 +1,4 @@
-package com.prashant.razorpay.payment_service.processor.dto;
+package com.prashant.razorpay.common_lib.dto;
 
 public sealed interface PaymentProcessorResponse permits
         PaymentProcessorResponse.Pending,

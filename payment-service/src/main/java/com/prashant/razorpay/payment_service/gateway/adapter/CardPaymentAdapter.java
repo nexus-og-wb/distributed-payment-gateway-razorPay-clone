@@ -1,27 +1,29 @@
 package com.prashant.razorpay.payment_service.gateway.adapter;
 
+import com.prashant.razorpay.common_lib.dto.PaymentProcessorResponse;
+import com.prashant.razorpay.common_lib.dto.VaultChargeRequest;
+import com.prashant.razorpay.payment_service.client.VaultServiceClient;
 import com.prashant.razorpay.payment_service.gateway.PaymentAdapter;
 import com.prashant.razorpay.payment_service.gateway.dto.PaymentRequest;
 import com.prashant.razorpay.payment_service.gateway.dto.PaymentResult;
-import com.prashant.razorpay.payment_service.processor.dto.PaymentProcessorResponse;
-
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
 import java.util.UUID;
+
 @Component
 @RequiredArgsConstructor
 public class CardPaymentAdapter implements PaymentAdapter {
 
-    private final VaultService vaultService;
+    private final VaultServiceClient vaultServiceClient;
 
     @Override
     public PaymentResult initiate(PaymentRequest request){
 
         String token =(String) request.methodDetails().get("token");
 
-        PaymentProcessorResponse response = vaultService.charge(
-                request.paymentId(), token, request.amount(), request.methodDetails()
+        PaymentProcessorResponse response = vaultServiceClient.charge(
+                new VaultChargeRequest(request.paymentId(), token, request.amount(), request.methodDetails())
         );
         return switch (response) {
             case PaymentProcessorResponse.Success success -> new PaymentResult.Success(success.bankReference());
