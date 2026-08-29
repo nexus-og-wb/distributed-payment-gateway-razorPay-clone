@@ -6,7 +6,7 @@ spring:
     config.server.git:
       uri: https://github.com/nexus-og-wb/distributed-razorpay-config
       username: nexus-og-wb
-      password: {$GITHUB_PASS}
+      password: ${GITHUB_PASS}
       default-label: main
 
 server.port: 8888

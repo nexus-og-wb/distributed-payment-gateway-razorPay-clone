@@ -1,4 +1,5 @@
-package com.prashant.razorpay.merchant_service.cache;
+package com.prashant.razorpay.common_lib.cache;
+
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.redis.core.StringRedisTemplate;

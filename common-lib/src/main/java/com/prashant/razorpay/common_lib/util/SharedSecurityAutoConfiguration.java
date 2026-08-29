@@ -24,6 +24,12 @@ public class SharedSecurityAutoConfiguration {
     }
 
     @Bean
+    @ConditionalOnProperty(name = "webhoook.secret-encryption-key")
+    public BytesEncryptor webhookSecretEncryptor(@Value("${webhoook.secret-encryption-key}") String masterKey) {
+        return new AesEncryptionConfig().masterKeyEncryptor(masterKey);
+    }
+
+    @Bean
     @RequestScope(proxyMode = ScopedProxyMode.TARGET_CLASS)
     public MerchantContext merchantContext(){
         return new MerchantContext();

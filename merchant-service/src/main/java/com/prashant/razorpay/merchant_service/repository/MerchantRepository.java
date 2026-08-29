@@ -14,8 +14,6 @@ import java.util.UUID;
 public interface MerchantRepository extends JpaRepository<Merchant, UUID> {
     boolean existsByEmail(String email);
 
-    List<UUID> findActiveMerchantIds();
-
     List<Merchant> findByStatus(MerchantStatus merchantStatus);
 
 }
