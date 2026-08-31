@@ -9,6 +9,8 @@ import com.prashant.razorpay.payment_service.repository.PaymentRepository;
 import com.prashant.razorpay.payment_service.service.PaymentService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import net.javacrumbs.shedlock.spring.annotation.SchedulerLock;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
 import java.time.LocalDateTime;
@@ -23,7 +25,9 @@ public class BankCallbackSimulator {
     private final PaymentService paymentService;
     private final SimulatorConfig simulatorConfig;
 
-//    @Scheduled(fixedDelayString = "${payment.simulator.poll-interval-ms:5000}")
+    @Scheduled(fixedDelayString = "${payment.simulator.poll-interval-ms:5000}")
+    @SchedulerLock(name = "payment-service-bank-callback-simulator", lockAtMostFor = "10s", lockAtLeastFor = "1s")
+
     public void processCallbacks() {
 
         LocalDateTime globalWindow = LocalDateTime.now().minusSeconds(1);
@@ -31,7 +35,7 @@ public class BankCallbackSimulator {
         List<Payment> candidates = paymentRepository
                 .findByStatusAndCreatedAtBefore(PaymentStatus.AUTHORIZING, globalWindow);
 
-        log.info("Simulating payment for payments"+ candidates.size());
+        log.info("Simulating payment for payments: {}", candidates.size());
 
         if(candidates.isEmpty()) return;
 
