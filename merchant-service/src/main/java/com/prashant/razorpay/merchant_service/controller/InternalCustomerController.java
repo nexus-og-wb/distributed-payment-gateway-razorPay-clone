@@ -3,10 +3,7 @@ package com.prashant.razorpay.merchant_service.controller;
 import com.prashant.razorpay.common_lib.dto.FindOrCreateCustomerRequest;
 import com.prashant.razorpay.merchant_service.service.CustomerService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.UUID;
 
@@ -17,7 +14,7 @@ public class InternalCustomerController {
 
     private final CustomerService customerService;
 
-    @GetMapping("/find-or-create")
+    @PostMapping("/find-or-create")
     public UUID findOrCreate(@RequestBody FindOrCreateCustomerRequest request){
         return customerService.findOrCreate(request.merchantId(), request.email(), request.name(), request.phone());
     }

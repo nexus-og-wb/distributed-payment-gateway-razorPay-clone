@@ -42,9 +42,17 @@ public class PaymentServiceImpl implements PaymentService {
     private final PaymentAuthorizationRecorder paymentAuthorizationRecorder;
     @Override
     @Transactional
-    public PaymentResponse initiate(UUID merchantId, PaymentInitRequest request) {
+    public PaymentResponse initiate(UUID merchantId, PaymentInitRequest request, String idempotencyKey) {
 
-        Payment payment = paymentAuthorizationRecorder.recordPayment(merchantId, request);
+        if(idempotencyKey != null){
+            var existing = paymentAuthorizationRecorder.findExistingAttempt(merchantId, idempotencyKey);
+            if(existing.isPresent()){
+                log.info("Idempotency replay for paymentId: {}", existing.get().id());
+                return existing.get();
+            }
+        }
+
+        Payment payment = paymentAuthorizationRecorder.recordPayment(merchantId, request, idempotencyKey);
 
         payment = paymentRepository.save(payment);
 
@@ -138,7 +146,7 @@ public class PaymentServiceImpl implements PaymentService {
             if(captureResult instanceof PaymentResult.Success success){
                 paymentTransitionService.apply(payment, PaymentEvent.CAPTURE_SUCCESS);
                 payment.setCapturedAt(LocalDateTime.now());
-                orderRecord.setOrderStatus(OrderStatus.PAID);;
+                orderRecord.setOrderStatus(OrderStatus.PAID);
             }else if(captureResult instanceof PaymentResult.Failure failure){
                 paymentTransitionService.apply(payment, PaymentEvent.CAPTURE_FAIL);
                 payment.setErrorCode(failure.errorCode());
