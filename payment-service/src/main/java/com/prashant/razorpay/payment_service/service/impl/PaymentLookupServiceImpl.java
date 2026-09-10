@@ -24,7 +24,8 @@ public class PaymentLookupServiceImpl implements PaymentLookupService {
     @Override
     @Transactional
     public List<PaymentSettlementView> findUnsettledCapturedPayments(UUID merchantId) {
-        List<Payment> paymentList = paymentRepository.findByMerchantIdAndStatusForUpdate(merchantId, PaymentStatus.CAPTURED);
+        List<Payment> paymentList = paymentRepository
+                .findByMerchantIdAndStatusForUpdate(merchantId, PaymentStatus.CAPTURED);
 
         return paymentList.stream()
                 .map(p -> new PaymentSettlementView(

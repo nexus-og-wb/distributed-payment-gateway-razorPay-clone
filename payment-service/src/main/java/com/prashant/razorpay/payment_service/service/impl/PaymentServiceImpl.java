@@ -41,7 +41,6 @@ public class PaymentServiceImpl implements PaymentService {
     private final OutboxEventPublisher eventPublisher;
     private final PaymentAuthorizationRecorder paymentAuthorizationRecorder;
     @Override
-    @Transactional
     public PaymentResponse initiate(UUID merchantId, PaymentInitRequest request, String idempotencyKey) {
 
         if(idempotencyKey != null){
