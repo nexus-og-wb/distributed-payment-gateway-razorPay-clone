@@ -25,3 +25,9 @@
 /nbdist/
 /.nb-gradle/
 /build/
+
+# Environment / secrets
+.env
+.env.*
+k8s/**/*.env
+k8s/k8s-secrets.env
