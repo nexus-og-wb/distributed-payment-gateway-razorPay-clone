@@ -25,9 +25,9 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
@@ -49,12 +49,13 @@ public class OrderServiceImpl implements OrderService {
     private final CustomerServiceClient  customerServiceClient;
 
     private final OutboxEventPublisher eventPublisher;
+    private final OrderPersistenceService orderPersistenceService;
 
     @Value("${razorpay.order.default-expiry-minutes:30}")
     private int defaultOrderExpiryMinutes;
 
     @Override
-    @Transactional
+    @Transactional(propagation = Propagation.NOT_SUPPORTED)
     @CircuitBreaker(name = "merchant-service")
     @Retry(name = "merchant-service")
     public OrderResponse create(UUID merchantId, CreateOrderRequest request) {
@@ -72,30 +73,7 @@ public class OrderServiceImpl implements OrderService {
             );
         }
 
-        OrderRecord order = OrderRecord.builder()
-                .receipt(request.receipt())
-                .amount(request.amount())
-                .notes(request.notes())
-                .merchantId(merchantId)
-                .customerId(customerId)
-                .orderStatus(OrderStatus.CREATED)
-                .expiresAt(request.expiresAt() != null ? request.expiresAt() : LocalDateTime.now().plusMinutes(defaultOrderExpiryMinutes))
-                .build();
-
-        order = orderRepository.save(order);
-
-        eventPublisher.publish(
-                EventAggregateType.ORDER,
-                order.getId(),
-                "ORDER_CREATED",
-                Map.of("orderId", order.getId(),
-                        "merchantId", merchantId.toString(),
-                        "orderStatus", order.getOrderStatus().name(),
-                        "amountUnits", order.getAmount().getAmountUnits(),
-                        "amountCurrency", order.getAmount().getCurrency())
-        );
-
-        return orderMapper.toResponse(order);
+        return orderPersistenceService.persist(merchantId, request, customerId, defaultOrderExpiryMinutes);
     }
 
     @Override
